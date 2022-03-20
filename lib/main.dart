@@ -36,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+   // Create storage
   final _storage = const FlutterSecureStorage();
 
   final TextEditingController _usernameController =
@@ -46,7 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool passwordHidden = true;
   bool _savePassword = true;
 
-  Future<void> readFromStorage() async {
+  // Read values
+  Future<void> _readFromStorage() async {
     _usernameController.text = await _storage.read(key: "KEY_USERNAME") ?? '';
     _passwordController.text = await _storage.read(key: "KEY_PASSWORD") ?? '';
   }
@@ -54,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _onFormSubmit() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (_savePassword) {
+        // Write values
         await _storage.write(key: "KEY_USERNAME", value: _usernameController.text);
         await _storage.write(key: "KEY_PASSWORD", value: _passwordController.text);
       }
@@ -67,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    readFromStorage();
+    _readFromStorage();
   }
 
   @override
