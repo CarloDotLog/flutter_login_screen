@@ -56,8 +56,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Read values
   Future<void> _readFromStorage() async {
-    _usernameController.text = await _storage.read(key: "KEY_USERNAME") ?? '';
-    _passwordController.text = await _storage.read(key: "KEY_PASSWORD") ?? '';
+
+    String isLocalAuthEnabled = await _storage.read(key: "KEY_LOCAL_AUTH_ENABLED") ?? "false";
+
+    if("true" == isLocalAuthEnabled){
+      bool didAuthenticate =
+      await localAuth.authenticate(
+          localizedReason: 'Please authenticate to sign in');
+
+      if(didAuthenticate){
+        _usernameController.text = await _storage.read(key: KEY_USERNAME) ?? '';
+        _passwordController.text = await _storage.read(key: KEY_PASSWORD) ?? '';
+      }
+    }else {
+      _usernameController.text = await _storage.read(key: KEY_USERNAME) ?? '';
+      _passwordController.text = await _storage.read(key: KEY_PASSWORD) ?? '';
+    }
   }
 
   _onFormSubmit() async {
