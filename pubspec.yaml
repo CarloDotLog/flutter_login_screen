@@ -30,7 +30,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # encrypted storage
   flutter_secure_storage: ^5.0.2
+
+  # biometric auth
+  local_auth: ^1.1.11
 
 dev_dependencies:
   flutter_test:
