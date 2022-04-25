@@ -16,6 +16,7 @@ made by <b style="font-size: 72pt;">CarloDotLog</b>
 
 This is a demo Flutter project with a simple login UI with some security checks.    
 Every branch is related to a blog post.
+**master** has all the functionalities.
 
 In **blog_post_branch** branch:    
 A demo Flutter project to store the login credentials in secure encrypted storage.    
