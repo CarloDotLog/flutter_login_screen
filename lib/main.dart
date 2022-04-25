@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:flutter_login_screen/widget/enable_local_auth_modal_bottom_sheet.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,13 +33,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-   static const Color primaryColor = Color(0xFF13B5A2);
+  static const Color primaryColor = Color(0xFF13B5A2);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-   // Create storage
+  // Create storage
   final _storage = const FlutterSecureStorage();
+  final String KEY_USERNAME = "KEY_USERNAME";
+  final String KEY_PASSWORD = "KEY_PASSWORD";
+  final String KEY_LOCAL_AUTH_ENABLED = "KEY_LOCAL_AUTH_ENABLED";
 
   final TextEditingController _usernameController =
       TextEditingController(text: "");
@@ -47,20 +52,64 @@ class _MyHomePageState extends State<MyHomePage> {
   bool passwordHidden = true;
   bool _savePassword = true;
 
+  var localAuth = LocalAuthentication();
+
   // Read values
   Future<void> _readFromStorage() async {
-    _usernameController.text = await _storage.read(key: "KEY_USERNAME") ?? '';
-    _passwordController.text = await _storage.read(key: "KEY_PASSWORD") ?? '';
+
+    String isLocalAuthEnabled = await _storage.read(key: "KEY_LOCAL_AUTH_ENABLED") ?? "false";
+
+    if("true" == isLocalAuthEnabled){
+      bool didAuthenticate =
+      await localAuth.authenticate(
+          localizedReason: 'Please authenticate to sign in');
+
+      if(didAuthenticate){
+        _usernameController.text = await _storage.read(key: KEY_USERNAME) ?? '';
+        _passwordController.text = await _storage.read(key: KEY_PASSWORD) ?? '';
+      }
+    }else {
+      _usernameController.text = await _storage.read(key: KEY_USERNAME) ?? '';
+      _passwordController.text = await _storage.read(key: KEY_PASSWORD) ?? '';
+    }
   }
 
   _onFormSubmit() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (_savePassword) {
+        // reset fingerprint auth values. Only for demo purpose
+        await _storage.write(
+            key: KEY_LOCAL_AUTH_ENABLED, value: "false");
+
         // Write values
-        await _storage.write(key: "KEY_USERNAME", value: _usernameController.text);
-        await _storage.write(key: "KEY_PASSWORD", value: _passwordController.text);
+        await _storage.write(
+            key: KEY_USERNAME, value: _usernameController.text);
+        await _storage.write(
+            key: KEY_PASSWORD, value: _passwordController.text);
+
+        // check if biometric auth is supported
+        if (await localAuth.canCheckBiometrics){
+          // Ask for enable biometric auth
+          showModalBottomSheet<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return EnableLocalAuthModalBottomSheet(action: _onEnableLocalAuth);
+            },
+          );
+        }
       }
     }
+  }
+
+  /// Method associated to UI Button in modalBottomSheet.
+  /// It enables local_auth and saves data into storage
+  _onEnableLocalAuth() async {
+    // Save
+    await _storage.write(key: KEY_LOCAL_AUTH_ENABLED, value: "true");
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Fingerprint authentication enabled.\nClose the app and restart it again"),
+    ));
   }
 
   _onForgotPassword() {}
