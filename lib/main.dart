@@ -107,6 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Save
     await _storage.write(key: KEY_LOCAL_AUTH_ENABLED, value: "true");
 
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Fingerprint authentication enabled.\nClose the app and restart it again"),
     ));
@@ -241,11 +242,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: size.width,
                 child: ElevatedButton(
                   onPressed: _onFormSubmit,
-                  child: const Text("Sign In"),
                   style: ElevatedButton.styleFrom(
                     primary: primaryColor,
                     textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)
                   ),
+                  child: const Text("Sign In"),
                 ),
               ),
               SizedBox(

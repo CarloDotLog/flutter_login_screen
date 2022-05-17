@@ -36,7 +36,6 @@ class EnableLocalAuthModalBottomSheet extends StatelessWidget {
             height: 10,
           ),
           ElevatedButton(
-            child: const Text("Yes, cool!"),
             onPressed: () {
               action();
               Navigator.pop(context);
@@ -45,14 +44,15 @@ class EnableLocalAuthModalBottomSheet extends StatelessWidget {
                 primary: primaryColor,
                 textStyle: const TextStyle(
                     fontSize: 22, fontWeight: FontWeight.bold)),
+            child: const Text("Yes, cool!"),
           ),
           ElevatedButton(
-            child: const Text("No, thanks!", style: TextStyle(color: Colors.black54),),
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
                 primary: Colors.grey[200],
                 textStyle: const TextStyle(
-                    fontSize: 18),)
+                    fontSize: 18),),
+            child: const Text("No, thanks!", style: TextStyle(color: Colors.black54),)
           )
         ],
       ),
