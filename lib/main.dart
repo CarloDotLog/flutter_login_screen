@@ -161,13 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: _passwordController,
                       obscureText: passwordHidden,
                       enableSuggestions: false,
-                      toolbarOptions: const ToolbarOptions(
-                        copy: false,
-                        paste: false,
-                        cut: false,
-                        selectAll: false,
-                        //by default all are disabled 'false'
-                      ),
+
                     ),
                   ],
                 ),
@@ -192,11 +186,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: size.width,
                 child: ElevatedButton(
                   onPressed: _onFormSubmit,
-                  child: const Text("Sign In"),
                   style: ElevatedButton.styleFrom(
-                    primary: primaryColor,
+                    backgroundColor: primaryColor,
                     textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)
                   ),
+                  child: const Text("Sign In"),
                 ),
               ),
               SizedBox(
